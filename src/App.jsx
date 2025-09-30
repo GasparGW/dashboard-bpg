@@ -60,50 +60,55 @@ const Dashboard = () => {
     { provincia: 'Otras', pct: 45, n: 17, nivel: 'Medio', color: '#f59e0b' }
   ];
 
-  // NUEVO: Quick Wins (matriz priorización)
+  // NUEVO: Quick Wins basados en Manual BPG-VCF
   const quickWinsData = [
     { 
       practica: 'Capacitación BPG',
       impacto: 90,
       facilidad: 85,
       brecha: 56.6,
-      costo: 'BAJO',
+      complejidad: 'BAJA',
+      seccion: '2.20-2.22',
       color: '#10b981',
       size: 400
     },
     { 
-      practica: 'Separación Residuos',
+      practica: 'Plan Manejo Residuos',
       impacto: 65,
       facilidad: 90,
       brecha: 38.6,
-      costo: 'BAJO',
+      complejidad: 'BAJA',
+      seccion: '7.11',
       color: '#3b82f6',
       size: 300
     },
     { 
-      practica: 'Documentación',
+      practica: 'Sistema Documentación',
       impacto: 75,
       facilidad: 70,
       brecha: 38.6,
-      costo: 'BAJO',
+      complejidad: 'BAJA',
+      seccion: '1.11-1.12',
       color: '#f59e0b',
       size: 300
     },
     { 
-      practica: 'Asesoría Permanente',
+      practica: 'Asesoría Veterinaria',
       impacto: 85,
       facilidad: 60,
       brecha: 55.4,
-      costo: 'MEDIO',
+      complejidad: 'MEDIA',
+      seccion: '11.1-11.2',
       color: '#8b5cf6',
       size: 350
     },
     { 
-      practica: 'Gestión Efluentes',
+      practica: 'Sistema Gestión Efluentes',
       impacto: 80,
       facilidad: 30,
       brecha: 66.3,
-      costo: 'ALTO',
+      complejidad: 'ALTA',
+      seccion: '7.1-7.7',
       color: '#ef4444',
       size: 400
     }
@@ -644,7 +649,8 @@ const Dashboard = () => {
                             <p className="text-sm">Impacto: {data.impacto}/100</p>
                             <p className="text-sm">Facilidad: {data.facilidad}/100</p>
                             <p className="text-sm">Brecha: {data.brecha}%</p>
-                            <p className="text-sm">Costo: {data.costo}</p>
+                            <p className="text-sm">Manual BPG: Sección {data.seccion}</p>
+                            <p className="text-sm">Complejidad: {data.complejidad}</p>
                           </div>
                         );
                       }
@@ -672,75 +678,70 @@ const Dashboard = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="bg-green-600/20 rounded-xl p-6 border-2 border-green-600">
-                <h3 className="text-xl font-bold mb-4 text-green-300">🎯 Top 3 Quick Wins</h3>
+                <h3 className="text-xl font-bold mb-4 text-green-300">🎯 Top 3 Quick Wins (Secciones del Manual BPG)</h3>
                 <div className="space-y-4">
                   <div className="bg-slate-800 rounded-lg p-4">
                     <div className="flex justify-between items-center mb-2">
-                      <span className="font-bold text-lg">Capacitación en BPG</span>
-                      <span className="bg-green-600 px-2 py-1 rounded text-xs">BAJO</span>
+                      <span className="font-bold text-lg">1. Capacitación en BPG</span>
+                      <span className="bg-green-600 px-2 py-1 rounded text-xs">PRIORITARIO</span>
                     </div>
                     <div className="text-sm text-slate-300 space-y-1">
-                      <div>• Brecha: 56.6% no conoce completamente</div>
-                      <div>• Impacto: +6.7 puntos en score</div>
-                      <div>• Costo: ~$50-100 USD/productor</div>
-                      <div>• Timeline: 2-3 meses</div>
+                      <div><strong>Brecha:</strong> 56.6% no conoce completamente BPG</div>
+                      <div><strong>Manual BPG (2.20-2.22):</strong> "Plan de capacitación integral para el personal... incluir formación en seguridad e higiene laboral, protección del ambiente y bienestar animal"</div>
+                      <div><strong>Impacto:</strong> +6.7 puntos en score de adopción</div>
                     </div>
                   </div>
 
                   <div className="bg-slate-800 rounded-lg p-4">
                     <div className="flex justify-between items-center mb-2">
-                      <span className="font-bold text-lg">Separación de Residuos</span>
-                      <span className="bg-green-600 px-2 py-1 rounded text-xs">BAJO</span>
+                      <span className="font-bold text-lg">2. Plan Manejo de Residuos</span>
+                      <span className="bg-green-600 px-2 py-1 rounded text-xs">PRIORITARIO</span>
                     </div>
                     <div className="text-sm text-slate-300 space-y-1">
-                      <div>• Brecha: 38.6% no separa</div>
-                      <div>• Facilidad: ALTA</div>
-                      <div>• Costo: ~$100-200 USD/establecimiento</div>
-                      <div>• Timeline: 1 mes</div>
+                      <div><strong>Brecha:</strong> 38.6% no separa residuos</div>
+                      <div><strong>Manual BPG (7.11):</strong> "Elaborar Plan de Manejo de Residuos que incluya: clasificación, almacenamiento y disposición final"</div>
+                      <div><strong>Facilidad:</strong> Alta - requiere organización y capacitación</div>
                     </div>
                   </div>
 
                   <div className="bg-slate-800 rounded-lg p-4">
                     <div className="flex justify-between items-center mb-2">
-                      <span className="font-bold text-lg">Templates Documentación</span>
-                      <span className="bg-green-600 px-2 py-1 rounded text-xs">BAJO</span>
+                      <span className="font-bold text-lg">3. Sistema de Documentación</span>
+                      <span className="bg-green-600 px-2 py-1 rounded text-xs">PRIORITARIO</span>
                     </div>
                     <div className="text-sm text-slate-300 space-y-1">
-                      <div>• Brecha: 38.6% no documenta</div>
-                      <div>• Facilidad: MEDIA</div>
-                      <div>• Costo: App/templates gratuitos</div>
-                      <div>• Timeline: 2 meses</div>
+                      <div><strong>Brecha:</strong> 38.6% no documenta adecuadamente</div>
+                      <div><strong>Manual BPG (1.11-1.12):</strong> "Los planes, protocolos y registros deben estar disponibles, actualizados, completos... Garantizar la trazabilidad de la información"</div>
+                      <div><strong>Facilidad:</strong> Media - requiere sistematización</div>
                     </div>
                   </div>
                 </div>
               </div>
 
               <div className="bg-orange-600/20 rounded-xl p-6 border-2 border-orange-600">
-                <h3 className="text-xl font-bold mb-4 text-orange-300">⏱️ Priorizar (Medio Plazo)</h3>
+                <h3 className="text-xl font-bold mb-4 text-orange-300">⏱️ Mediano y Largo Plazo</h3>
                 <div className="space-y-4">
                   <div className="bg-slate-800 rounded-lg p-4">
                     <div className="flex justify-between items-center mb-2">
-                      <span className="font-bold text-lg">Asesoría Permanente</span>
-                      <span className="bg-orange-600 px-2 py-1 rounded text-xs">MEDIO</span>
+                      <span className="font-bold text-lg">4. Asesoría Veterinaria</span>
+                      <span className="bg-orange-600 px-2 py-1 rounded text-xs">MEDIO PLAZO</span>
                     </div>
                     <div className="text-sm text-slate-300 space-y-1">
-                      <div>• Brecha: 55.4%</div>
-                      <div>• Impacto: +6 puntos en score</div>
-                      <div>• Requiere: Presupuesto sostenido</div>
-                      <div>• Timeline: 6-12 meses</div>
+                      <div><strong>Brecha:</strong> 55.4% sin asesoría permanente</div>
+                      <div><strong>Manual BPG (11.1-11.2):</strong> "Todos los establecimientos deben disponer de asesor veterinario... Elaborar plan sanitario establecido por veterinario"</div>
+                      <div><strong>Impacto:</strong> +6 puntos en score de adopción</div>
                     </div>
                   </div>
 
                   <div className="bg-slate-800 rounded-lg p-4">
                     <div className="flex justify-between items-center mb-2">
-                      <span className="font-bold text-lg">Gestión de Efluentes</span>
-                      <span className="bg-red-600 px-2 py-1 rounded text-xs">ALTO</span>
+                      <span className="font-bold text-lg">5. Gestión de Efluentes</span>
+                      <span className="bg-red-600 px-2 py-1 rounded text-xs">LARGO PLAZO</span>
                     </div>
                     <div className="text-sm text-slate-300 space-y-1">
-                      <div>• Brecha: 66.3% (mayor brecha)</div>
-                      <div>• Facilidad: BAJA (infraestructura)</div>
-                      <div>• Costo: $5,000-15,000 USD</div>
-                      <div>• Timeline: 12-18 meses</div>
+                      <div><strong>Brecha:</strong> 66.3% (mayor brecha identificada)</div>
+                      <div><strong>Manual BPG (7.2-7.4):</strong> "El estiércol debe almacenarse impermeabilizado... Elaborar plan de tratamiento que considere recolección, almacenamiento y tratamiento"</div>
+                      <div><strong>Complejidad:</strong> Alta - requiere infraestructura</div>
                     </div>
                   </div>
                 </div>
@@ -748,30 +749,31 @@ const Dashboard = () => {
             </div>
 
             <div className="bg-gradient-to-r from-green-600 to-emerald-600 rounded-xl p-6 border border-green-500">
-              <h3 className="text-2xl font-bold mb-4">Plan de Acción Recomendado</h3>
+              <h3 className="text-2xl font-bold mb-4">Plan de Implementación Basado en Manual BPG-VCF</h3>
+              <p className="text-sm text-emerald-100 mb-4">Acciones priorizadas según complejidad y brecha identificada</p>
               <div className="grid grid-cols-3 gap-4">
                 <div>
-                  <div className="text-3xl font-bold mb-2">Mes 1-2</div>
+                  <div className="text-3xl font-bold mb-2">Corto Plazo</div>
                   <ul className="text-sm space-y-1">
-                    <li>✓ Kit separación residuos</li>
-                    <li>✓ Talleres introductorios BPG</li>
-                    <li>✓ Templates documentación</li>
+                    <li>✓ Capacitación en BPG (Sección 2.20-2.22)</li>
+                    <li>✓ Plan manejo residuos (Sección 7.11)</li>
+                    <li>✓ Sistema documentación (Sección 1.11-1.12)</li>
                   </ul>
                 </div>
                 <div>
-                  <div className="text-3xl font-bold mb-2">Mes 3-6</div>
+                  <div className="text-3xl font-bold mb-2">Mediano Plazo</div>
                   <ul className="text-sm space-y-1">
-                    <li>✓ Sistema RAG operativo</li>
-                    <li>✓ Programa asesoría subsidiada</li>
-                    <li>✓ Seguimiento adopción</li>
+                    <li>✓ Asesoría veterinaria (Sección 11.1-11.2)</li>
+                    <li>✓ Sistema RAG para consultas</li>
+                    <li>✓ Evaluación de progreso</li>
                   </ul>
                 </div>
                 <div>
-                  <div className="text-3xl font-bold mb-2">Mes 7-12</div>
+                  <div className="text-3xl font-bold mb-2">Largo Plazo</div>
                   <ul className="text-sm space-y-1">
-                    <li>✓ Piloto gestión efluentes</li>
-                    <li>✓ Red de mentores</li>
-                    <li>✓ Evaluación impacto</li>
+                    <li>✓ Sistema gestión efluentes (Sección 7.1-7.7)</li>
+                    <li>✓ Infraestructura especializada</li>
+                    <li>✓ Auditoría y certificación</li>
                   </ul>
                 </div>
               </div>
@@ -957,23 +959,84 @@ const Dashboard = () => {
         {activeSection === 'proyectos' && (
           <div className="space-y-6">
             <div className="bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl p-8 border border-purple-500">
-              <h2 className="text-3xl font-bold mb-4">Proyectos</h2>
-              <p className="text-lg text-purple-50">Basados en hallazgos del análisis</p>
+              <h2 className="text-3xl font-bold mb-4">Proyecto Propuesto</h2>
+              <p className="text-lg text-purple-50">Basado en hallazgos del análisis y Manual BPG-VCF</p>
             </div>
 
             <div className="bg-gradient-to-br from-blue-600 to-cyan-600 rounded-xl p-8 border-4 border-cyan-400">
               <div className="flex items-center gap-4 mb-6">
                 <Zap size={40} />
                 <div>
-                  <h3 className="text-3xl font-bold">Sistema RAG</h3>
-                  <p className="text-xl">Asistente Virtual de BPG</p>
+                  <h3 className="text-3xl font-bold">Sistema RAG - Asistente Virtual de BPG</h3>
+                  <p className="text-xl">Retrieval-Augmented Generation</p>
                 </div>
               </div>
-              <div className="bg-white/10 rounded-xl p-6 backdrop-blur">
-                <h4 className="text-xl font-bold mb-4">Justificación</h4>
-                <p className="text-cyan-50">
-                  50.6% conocen solo parcialmente BPG. Sistema RAG puede cerrar brecha de 4-6 puntos.
-                </p>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="bg-white/10 rounded-xl p-6 backdrop-blur">
+                  <h4 className="text-xl font-bold mb-4">¿Qué es RAG?</h4>
+                  <p className="text-cyan-50 mb-4">
+                    RAG combina <strong>búsqueda inteligente</strong> en documentos específicos con <strong>generación de respuestas</strong> usando IA.
+                  </p>
+                  <p className="text-cyan-50">
+                    No entrena un modelo desde cero, sino que busca información relevante en el Manual BPG-VCF oficial y genera respuestas precisas basadas en esa información.
+                  </p>
+                </div>
+
+                <div className="bg-white/10 rounded-xl p-6 backdrop-blur">
+                  <h4 className="text-xl font-bold mb-4">Ejemplo Práctico</h4>
+                  <div className="bg-slate-900/50 rounded-lg p-4 mb-3">
+                    <p className="text-sm text-cyan-200 mb-2"><strong>Productor pregunta:</strong></p>
+                    <p className="text-sm text-white">"¿Cómo gestiono los efluentes de mi feedlot?"</p>
+                  </div>
+                  <div className="bg-slate-900/50 rounded-lg p-4">
+                    <p className="text-sm text-emerald-200 mb-2"><strong>Sistema RAG responde:</strong></p>
+                    <p className="text-sm text-white">"Según Manual BPG-VCF sección 7.2: El estiércol debe almacenarse en lugar impermeabilizado..."</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-slate-800 rounded-xl p-6 border border-slate-700">
+              <h3 className="text-2xl font-bold mb-4 text-amber-400">Justificación del Proyecto</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <h4 className="font-bold text-lg mb-3 text-red-400">Problema Identificado</h4>
+                  <ul className="space-y-2 text-slate-300">
+                    <li>• <strong>56.6%</strong> de productores NO conocen completamente las BPG</li>
+                    <li>• <strong>50.6%</strong> conoce solo parcialmente</li>
+                    <li>• Diferencia de <strong>6.7 puntos</strong> en score entre quienes conocen vs no conocen</li>
+                    <li>• Manual BPG-VCF de 48 páginas con información técnica compleja</li>
+                  </ul>
+                </div>
+                <div>
+                  <h4 className="font-bold text-lg mb-3 text-green-400">Solución RAG</h4>
+                  <ul className="space-y-2 text-slate-300">
+                    <li>• Asistente virtual 24/7 basado en Manual oficial</li>
+                    <li>• Respuestas precisas citando secciones específicas</li>
+                    <li>• Accesible desde cualquier dispositivo</li>
+                    <li>• Reduce brecha de conocimiento sin capacitaciones presenciales</li>
+                    <li>• Garantiza respuestas del Manual oficial, no de internet general</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl p-6">
+              <h3 className="text-2xl font-bold mb-4">Impacto Esperado</h3>
+              <div className="grid grid-cols-3 gap-4">
+                <div className="bg-white/10 rounded-lg p-4 backdrop-blur">
+                  <div className="text-3xl font-bold text-emerald-300 mb-2">+4-7</div>
+                  <p className="text-sm">Puntos estimados de mejora en score de adopción</p>
+                </div>
+                <div className="bg-white/10 rounded-lg p-4 backdrop-blur">
+                  <div className="text-3xl font-bold text-cyan-300 mb-2">24/7</div>
+                  <p className="text-sm">Disponibilidad de consultas sin límites de horario</p>
+                </div>
+                <div className="bg-white/10 rounded-lg p-4 backdrop-blur">
+                  <div className="text-3xl font-bold text-purple-300 mb-2">100%</div>
+                  <p className="text-sm">Fidelidad al Manual BPG-VCF oficial</p>
+                </div>
               </div>
             </div>
 
@@ -1032,39 +1095,61 @@ const Dashboard = () => {
             </div>
 
             <div className="bg-slate-800 rounded-xl p-6 border border-slate-700">
-              <h3 className="text-2xl font-bold mb-6 text-amber-400">Recomendaciones Priorizadas</h3>
+              <h3 className="text-2xl font-bold mb-6 text-amber-400">Recomendaciones Basadas en Manual BPG-VCF</h3>
               <div className="space-y-4">
-                <div className="bg-orange-600/20 rounded-lg p-4 border-l-4 border-orange-600">
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="bg-orange-600 text-white px-3 py-1 rounded text-sm font-bold">ALTA</span>
-                    <h4 className="font-bold text-lg">Programa focalizado para medianos (251-500 cab)</h4>
-                  </div>
-                  <p className="text-slate-300 mb-2">
-                    Capacitación específica y asesoramiento subsidiado para el segmento con menor adopción.
-                  </p>
-                  <div className="text-sm text-slate-400">Timeline: 6 meses | Beneficia: 13 productores</div>
-                </div>
-
-                <div className="bg-yellow-600/20 rounded-lg p-4 border-l-4 border-yellow-600">
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="bg-yellow-600 text-white px-3 py-1 rounded text-sm font-bold">MEDIA</span>
-                    <h4 className="font-bold text-lg">Capacitación en gestión ambiental</h4>
-                  </div>
-                  <p className="text-slate-300 mb-2">
-                    Talleres prácticos sobre gestión de efluentes y separación de residuos (prácticas con menor adopción).
-                  </p>
-                  <div className="text-sm text-slate-400">Timeline: Continuo | Beneficia: 55 productores (66%)</div>
-                </div>
-
                 <div className="bg-green-600/20 rounded-lg p-4 border-l-4 border-green-600">
                   <div className="flex items-center gap-2 mb-2">
-                    <span className="bg-green-600 text-white px-3 py-1 rounded text-sm font-bold">LARGO PLAZO</span>
-                    <h4 className="font-bold text-lg">Red de mentores de alto desempeño</h4>
+                    <span className="bg-green-600 text-white px-3 py-1 rounded text-sm font-bold">PRIORIDAD 1</span>
+                    <h4 className="font-bold text-lg">Capacitación Integral en BPG</h4>
                   </div>
                   <p className="text-slate-300 mb-2">
-                    Conectar productores top 3 con aquellos de bajo desempeño para transferencia de mejores prácticas.
+                    <strong>Manual BPG (2.20-2.22):</strong> "Plan de capacitación integral para el personal actual e ingresante según funciones... incluir formación en seguridad e higiene laboral, protección del ambiente y bienestar animal."
                   </p>
-                  <div className="text-sm text-slate-400">Timeline: 12 meses | Beneficia: toda la red</div>
+                  <div className="text-sm text-slate-400">Beneficia: 47 productores (56.6%) que no conocen completamente BPG | Impacto: +6.7 puntos en score</div>
+                </div>
+
+                <div className="bg-orange-600/20 rounded-lg p-4 border-l-4 border-orange-600">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="bg-orange-600 text-white px-3 py-1 rounded text-sm font-bold">PRIORIDAD 2</span>
+                    <h4 className="font-bold text-lg">Sistema de Gestión de Efluentes</h4>
+                  </div>
+                  <p className="text-slate-300 mb-2">
+                    <strong>Manual BPG (7.2, 7.4):</strong> "El estiércol debe almacenarse impermeabilizado natural o artificialmente... Elaborar plan de tratamiento que considere recolección, almacenamiento, acondicionamiento y posible uso."
+                  </p>
+                  <div className="text-sm text-slate-400">Beneficia: 55 productores (66.3%) sin gestión adecuada | Mayor brecha identificada</div>
+                </div>
+
+                <div className="bg-blue-600/20 rounded-lg p-4 border-l-4 border-blue-600">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="bg-blue-600 text-white px-3 py-1 rounded text-sm font-bold">PRIORIDAD 3</span>
+                    <h4 className="font-bold text-lg">Asesoramiento Veterinario Permanente</h4>
+                  </div>
+                  <p className="text-slate-300 mb-2">
+                    <strong>Manual BPG (11.1-11.2):</strong> "Todos los establecimientos deben disponer de servicios de un asesor veterinario... Elaborar plan sanitario establecido por veterinario para prevención, control y erradicación de enfermedades."
+                  </p>
+                  <div className="text-sm text-slate-400">Beneficia: 46 productores (55.4%) sin asesoría permanente | Impacto: +6 puntos en score</div>
+                </div>
+
+                <div className="bg-purple-600/20 rounded-lg p-4 border-l-4 border-purple-600">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="bg-purple-600 text-white px-3 py-1 rounded text-sm font-bold">COMPLEMENTARIO</span>
+                    <h4 className="font-bold text-lg">Plan de Manejo de Residuos y Sistema de Documentación</h4>
+                  </div>
+                  <p className="text-slate-300 mb-2">
+                    <strong>Manual BPG (7.11, 1.11-1.12):</strong> "Plan de Manejo de Residuos que incluya clasificación, almacenamiento y disposición final" + "Planes, protocolos y registros disponibles, actualizados y completos para garantizar trazabilidad."
+                  </p>
+                  <div className="text-sm text-slate-400">Beneficia: 32 productores (38.6%) cada uno | Facilidad de implementación: Alta-Media</div>
+                </div>
+
+                <div className="bg-cyan-600/20 rounded-lg p-4 border-l-4 border-cyan-600">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="bg-cyan-600 text-white px-3 py-1 rounded text-sm font-bold">ESTRATÉGICO</span>
+                    <h4 className="font-bold text-lg">Programa Focalizado para Productores Medianos</h4>
+                  </div>
+                  <p className="text-slate-300 mb-2">
+                    Establecimientos de 251-500 cabezas muestran el menor score (12.15). Aplicar secciones del manual con enfoque adaptado a su escala: capacitación específica y asesoramiento según complejidad de su operación.
+                  </p>
+                  <div className="text-sm text-slate-400">Beneficia: 13 productores en "valle de los medianos" | Cierra brecha crítica</div>
                 </div>
               </div>
             </div>
