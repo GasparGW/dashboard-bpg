@@ -1,0 +1,280 @@
+{
+  "stats_generales": {
+    "total": 83,
+    "score_promedio": 15.39,
+    "score_min": 5,
+    "score_max": 29,
+    "score_mediana": 15
+  },
+  "conocimiento_bpg": [
+    {
+      "nivel": "Conoce completamente",
+      "n": 36,
+      "porcentaje": 43.4,
+      "score": 17.86,
+      "color": "#10b981"
+    },
+    {
+      "nivel": "Conoce parcialmente",
+      "n": 42,
+      "porcentaje": 50.6,
+      "score": 13.76,
+      "color": "#f59e0b"
+    },
+    {
+      "nivel": "No conoce",
+      "n": 5,
+      "porcentaje": 6.0,
+      "score": 11.2,
+      "color": "#ef4444"
+    }
+  ],
+  "valle_medianos": [
+    {
+      "escala": "101-250",
+      "n": 18,
+      "score": 15.11
+    },
+    {
+      "escala": "251-500",
+      "n": 13,
+      "score": 12.15
+    },
+    {
+      "escala": "501-1000",
+      "n": 13,
+      "score": 15.46
+    },
+    {
+      "escala": "1001-5000",
+      "n": 25,
+      "score": 16.64
+    }
+  ],
+  "tipo_asesoria": [
+    {
+      "tipo": "Permanente",
+      "n": 37,
+      "score": 18.32
+    },
+    {
+      "tipo": "Planificar procesos",
+      "n": 26,
+      "score": 13.62
+    },
+    {
+      "tipo": "Solo enfermos",
+      "n": 20,
+      "score": 12.25
+    }
+  ],
+  "tasas_adopcion": [
+    {
+      "pilar": "Planificación",
+      "adopcion": 96.4,
+      "n": 80,
+      "color": "#10b981"
+    },
+    {
+      "pilar": "Asesoría Veterinaria",
+      "adopcion": 91.6,
+      "n": 76,
+      "color": "#3b82f6"
+    },
+    {
+      "pilar": "Manejo Reproductivo",
+      "adopcion": 83.1,
+      "n": 69,
+      "color": "#8b5cf6"
+    },
+    {
+      "pilar": "Tiene Mapa",
+      "adopcion": 74.7,
+      "n": 62,
+      "color": "#f59e0b"
+    },
+    {
+      "pilar": "Separa Residuos",
+      "adopcion": 61.4,
+      "n": 51,
+      "color": "#ef4444"
+    },
+    {
+      "pilar": "Documentación",
+      "adopcion": 61.4,
+      "n": 51,
+      "color": "#06b6d4"
+    }
+  ],
+  "mapa_calor_provincial": [
+    {
+      "provincia": "San Luis",
+      "n": 2,
+      "pct": 100.0,
+      "nivel": "Alto",
+      "color": "#10b981"
+    },
+    {
+      "provincia": "Rio Negro",
+      "n": 2,
+      "pct": 100.0,
+      "nivel": "Alto",
+      "color": "#10b981"
+    },
+    {
+      "provincia": "Santa Fe",
+      "n": 15,
+      "pct": 60.0,
+      "nivel": "Alto",
+      "color": "#10b981"
+    },
+    {
+      "provincia": "Córdoba",
+      "n": 15,
+      "pct": 53.3,
+      "nivel": "Alto",
+      "color": "#10b981"
+    },
+    {
+      "provincia": "Entre Ríos",
+      "n": 2,
+      "pct": 50.0,
+      "nivel": "Medio",
+      "color": "#f59e0b"
+    },
+    {
+      "provincia": "Corrientes",
+      "n": 2,
+      "pct": 50.0,
+      "nivel": "Medio",
+      "color": "#f59e0b"
+    },
+    {
+      "provincia": "Catamarca",
+      "n": 2,
+      "pct": 50.0,
+      "nivel": "Medio",
+      "color": "#f59e0b"
+    },
+    {
+      "provincia": "Buenos Aires",
+      "n": 36,
+      "pct": 33.3,
+      "nivel": "Medio",
+      "color": "#f59e0b"
+    },
+    {
+      "provincia": "Misiones",
+      "n": 2,
+      "pct": 0.0,
+      "nivel": "Bajo",
+      "color": "#ef4444"
+    },
+    {
+      "provincia": "La Pampa",
+      "n": 2,
+      "pct": 0.0,
+      "nivel": "Bajo",
+      "color": "#ef4444"
+    }
+  ],
+  "clustering": [
+    {
+      "nombre": "Adopción Avanzada",
+      "n": 24,
+      "porcentaje": 28.9,
+      "score": 20.4,
+      "conoceBPG": 92.0,
+      "asesoría": 100.0,
+      "color": "#10b981"
+    },
+    {
+      "nombre": "Adopción Media-Alta",
+      "n": 33,
+      "porcentaje": 39.8,
+      "score": 14.8,
+      "conoceBPG": 33.0,
+      "asesoría": 100.0,
+      "color": "#3b82f6"
+    },
+    {
+      "nombre": "Adopción Media",
+      "n": 15,
+      "porcentaje": 18.1,
+      "score": 12.7,
+      "conoceBPG": 0.0,
+      "asesoría": 100.0,
+      "color": "#f59e0b"
+    },
+    {
+      "nombre": "Adopción Baja",
+      "n": 9,
+      "porcentaje": 10.8,
+      "score": 10.7,
+      "conoceBPG": 33.0,
+      "asesoría": 44.0,
+      "color": "#8b5cf6"
+    },
+    {
+      "nombre": "Adopción Crítica",
+      "n": 2,
+      "porcentaje": 2.4,
+      "score": 6.5,
+      "conoceBPG": 0.0,
+      "asesoría": 0.0,
+      "color": "#ef4444"
+    }
+  ],
+  "quick_wins": [
+    {
+      "practica": "Capacitación BPG",
+      "impacto": 90,
+      "facilidad": 85,
+      "brecha": 56.6,
+      "complejidad": "BAJA",
+      "seccion": "2.20-2.22",
+      "color": "#10b981",
+      "size": 400
+    },
+    {
+      "practica": "Plan Manejo Residuos",
+      "impacto": 65,
+      "facilidad": 90,
+      "brecha": 38.6,
+      "complejidad": "BAJA",
+      "seccion": "7.11",
+      "color": "#3b82f6",
+      "size": 300
+    },
+    {
+      "practica": "Sistema Documentación",
+      "impacto": 75,
+      "facilidad": 70,
+      "brecha": 38.6,
+      "complejidad": "BAJA",
+      "seccion": "1.11-1.12",
+      "color": "#f59e0b",
+      "size": 300
+    },
+    {
+      "practica": "Asesoría Veterinaria",
+      "impacto": 85,
+      "facilidad": 60,
+      "brecha": 55.4,
+      "complejidad": "MEDIA",
+      "seccion": "11.1-11.2",
+      "color": "#8b5cf6",
+      "size": 350
+    },
+    {
+      "practica": "Sistema Gestión Efluentes",
+      "impacto": 80,
+      "facilidad": 30,
+      "brecha": 66.3,
+      "complejidad": "ALTA",
+      "seccion": "7.1-7.7",
+      "color": "#ef4444",
+      "size": 400
+    }
+  ]
+}
