@@ -1,3 +1,4 @@
+import StatCard from './components/ui/StatCard';
 import React, { useState } from 'react';
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, ScatterChart, Scatter, PieChart, Pie } from 'recharts';
 import { TrendingUp, Users, AlertTriangle, Award, Heart, Target, Zap, TrendingDown, BookOpen, CheckCircle, ArrowRight, UserCheck, Lightbulb } from 'lucide-react';
@@ -270,23 +271,11 @@ const Dashboard = () => {
             <div className="bg-slate-800 rounded-xl p-6 border border-slate-700">
               <h3 className="text-xl font-bold mb-4">Distribución de Puntuación</h3>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="bg-slate-700 rounded-lg p-4">
-                  <div className="text-sm text-slate-400">Mínimo</div>
-                  <div className="text-3xl font-bold text-red-400">5</div>
-                </div>
-                <div className="bg-slate-700 rounded-lg p-4">
-                  <div className="text-sm text-slate-400">Mediana</div>
-                  <div className="text-3xl font-bold text-yellow-400">15</div>
-                </div>
-                <div className="bg-slate-700 rounded-lg p-4">
-                  <div className="text-sm text-slate-400">Promedio</div>
-                  <div className="text-3xl font-bold text-blue-400">15.39</div>
-                </div>
-                <div className="bg-slate-700 rounded-lg p-4">
-                  <div className="text-sm text-slate-400">Máximo</div>
-                  <div className="text-3xl font-bold text-green-400">29</div>
-                </div>
-              </div>
+  <StatCard label="Mínimo" value="5" color="red" />
+  <StatCard label="Mediana" value="15" color="yellow" />
+  <StatCard label="Promedio" value="15.39" color="blue" />
+  <StatCard label="Máximo" value="29" color="green" />
+</div>
             </div>
 
             {/* NUEVO: Mapa de Calor Provincial */}
