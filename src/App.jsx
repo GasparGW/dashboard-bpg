@@ -107,8 +107,8 @@ const Dashboard = () => {
               <div className="bg-slate-800 rounded-xl p-6 border border-slate-700">
                 <h3 className="text-xl font-bold mb-4 text-purple-400">Metodología</h3>
                 <div className="space-y-4">
-                  <div><div className="font-semibold mb-2">Instrumento</div><p className="text-slate-300">Encuesta estructurada vía Google Forms con 32 preguntas sobre prácticas específicas</p></div>
-                  <div><div className="font-semibold mb-2">Score de Adopción</div><p className="text-slate-300">Suma de respuestas positivas (Sí=1, No=0) sobre 32 prácticas evaluadas. Rango: 0-32 puntos</p></div>
+                  <div><div className="font-semibold mb-2">Instrumento</div><p className="text-slate-300">Encuesta estructurada vía Google Forms con 33 preguntas sobre prácticas específicas</p></div>
+                  <div><div className="font-semibold mb-2">Score de Adopción</div><p className="text-slate-300">Suma de respuestas positivas (Sí=1, No=0) sobre 33 prácticas evaluadas. Rango: 0-33 puntos</p></div>
                   <div><div className="font-semibold mb-2">Muestra</div><p className="text-slate-300">83 productores de Buenos Aires, Córdoba, Santa Fe y otras provincias</p></div>
                 </div>
               </div>
@@ -119,7 +119,7 @@ const Dashboard = () => {
                 <StatCard label="Total Productores" value={statsGenerales.total} />
                 <StatCard label="Provincias" value="5" />
                 <StatCard label="Tamaños" value="6" sublabel="categorías" />
-                <StatCard label="Prácticas" value="32" sublabel="evaluadas" />
+                <StatCard label="Prácticas" value="33" sublabel="evaluadas" />
               </div>
             </div>
             <div className="bg-gradient-to-r from-blue-600 to-cyan-600 rounded-xl p-6 flex items-center justify-between">
@@ -188,7 +188,7 @@ const Dashboard = () => {
               <p className="text-purple-50">Tres variables clave explican las diferencias en adopción de BPG</p>
             </div>
             <div className="bg-gradient-to-r from-green-600 to-emerald-600 rounded-xl p-6 border border-green-500">
-              <div className="flex items-center gap-3 mb-4"><Award size={32} /><h2 className="text-2xl font-bold">Factor #1: Conocimiento Previo</h2></div>
+              <div className="flex items-center gap-3 mb-4"><Award size={33} /><h2 className="text-2xl font-bold">Factor #1: Conocimiento Previo</h2></div>
               <p className="text-lg text-green-50 mb-4">Diferencia de 6.7 puntos entre quienes conocen vs no conocen BPG</p>
               <ResponsiveContainer width="100%" height={300}>
                 <BarChart data={conocimientoData}>
@@ -476,7 +476,7 @@ const Dashboard = () => {
         {activeSection === 'brechas' && (
           <div className="space-y-6">
             <div className="bg-gradient-to-r from-red-600 to-orange-600 rounded-xl p-6 border border-red-500">
-              <div className="flex items-center gap-3 mb-4"><AlertTriangle size={32} /><h2 className="text-2xl font-bold">Brechas de Adopción</h2></div>
+              <div className="flex items-center gap-3 mb-4"><AlertTriangle size={33} /><h2 className="text-2xl font-bold">Brechas de Adopción</h2></div>
               <p className="text-lg text-red-50">Diferencia de 63 puntos porcentuales entre prácticas más y menos adoptadas</p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -524,7 +524,7 @@ const Dashboard = () => {
         {activeSection === 'outliers' && (
           <div className="space-y-6">
             <div className="bg-gradient-to-r from-yellow-600 to-amber-600 rounded-xl p-6 border border-yellow-500">
-              <div className="flex items-center gap-3 mb-4"><Award size={32} /><h2 className="text-2xl font-bold">Casos Destacados</h2></div>
+              <div className="flex items-center gap-3 mb-4"><Award size={33} /><h2 className="text-2xl font-bold">Casos Destacados</h2></div>
               <p className="text-lg text-yellow-50">Análisis de productores con mejor y peor desempeño para identificar patrones</p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -730,7 +730,7 @@ const Dashboard = () => {
                     <h4 className="font-bold text-lg">Plan de Manejo de Residuos y Sistema de Documentación</h4>
                   </div>
                   <p className="text-slate-300 mb-2"><strong>Manual BPG (7.11, 1.11-1.12):</strong> "Plan de Manejo de Residuos que incluya clasificación, almacenamiento y disposición final" + "Planes, protocolos y registros disponibles, actualizados y completos para garantizar trazabilidad."</p>
-                  <div className="text-sm text-slate-400">Beneficia: 32 productores (38.6%) cada uno | Facilidad de implementación: Alta-Media</div>
+                  <div className="text-sm text-slate-400">Beneficia: 33 productores (38.6%) cada uno | Facilidad de implementación: Alta-Media</div>
                 </div>
                 <div className="bg-cyan-600/20 rounded-lg p-4 border-l-4 border-cyan-600">
                   <div className="flex items-center gap-2 mb-2">
