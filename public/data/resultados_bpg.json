@@ -181,26 +181,26 @@
   "clustering": [
     {
       "nombre": "Adopción Avanzada",
-      "n": 24,
-      "porcentaje": 28.9,
-      "score": 20.4,
-      "conoceBPG": 92.0,
+      "n": 20,
+      "porcentaje": 24.1,
+      "score": 21.2,
+      "conoceBPG": 90.0,
       "asesoría": 100.0,
       "color": "#10b981"
     },
     {
       "nombre": "Adopción Media-Alta",
-      "n": 33,
-      "porcentaje": 39.8,
-      "score": 14.8,
-      "conoceBPG": 33.0,
+      "n": 36,
+      "porcentaje": 43.4,
+      "score": 15.0,
+      "conoceBPG": 42.0,
       "asesoría": 100.0,
       "color": "#3b82f6"
     },
     {
       "nombre": "Adopción Media",
-      "n": 15,
-      "porcentaje": 18.1,
+      "n": 16,
+      "porcentaje": 19.3,
       "score": 12.7,
       "conoceBPG": 0.0,
       "asesoría": 100.0,
