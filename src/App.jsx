@@ -1,5 +1,5 @@
 import StatCard from './components/ui/StatCard';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, ScatterChart, Scatter, PieChart, Pie } from 'recharts';
 import { TrendingUp, Users, AlertTriangle, Award, Heart, Target, Zap, TrendingDown, BookOpen, CheckCircle, ArrowRight, UserCheck, Lightbulb } from 'lucide-react';
 
@@ -18,7 +18,60 @@ const Dashboard = () => {
       .catch(err => console.error('Error cargando datos:', err));
   }, []);
 
-  if (!datos) {
+  // Calcular valores dinámicamente
+  const calculados = useMemo(() => {
+    if (!datos) return null;
+
+    const numPracticas = datos.stats_generales.score_max; // El máximo score es el número de prácticas
+    const porcentajeAdopcion = ((datos.stats_generales.score_promedio / numPracticas) * 100).toFixed(1);
+    
+    // Calcular diferencia de conocimiento
+    const conoceSi = datos.conocimiento_bpg.find(k => k.nivel === 'Conoce completamente');
+    const conoceNo = datos.conocimiento_bpg.find(k => k.nivel === 'No conoce');
+    const conoceParcial = datos.conocimiento_bpg.find(k => k.nivel === 'Conoce parcialmente');
+    const diferenciaConocimiento = conoceSi && conoceNo ? (conoceSi.score - conoceNo.score).toFixed(1) : 0;
+    
+    // Calcular % de Buenos Aires del total
+    const buenosAires = datos.mapa_calor_provincial.find(p => p.provincia === 'Buenos Aires');
+    const pctBuenosAires = buenosAires ? ((buenosAires.n / datos.stats_generales.total) * 100).toFixed(1) : 0;
+    
+    // Calcular brecha entre mejor y peor práctica
+    const maxAdopcion = Math.max(...datos.tasas_adopcion.map(t => t.adopcion));
+    const minAdopcion = Math.min(...datos.tasas_adopcion.map(t => t.adopcion));
+    const brechaAdopcion = (maxAdopcion - minAdopcion).toFixed(1);
+    
+    // Calcular diferencia de asesoramiento
+    const permanente = datos.tipo_asesoria.find(a => a.tipo === 'Permanente');
+    const soloEnfermos = datos.tipo_asesoria.find(a => a.tipo === 'Solo enfermos');
+    const diferenciaAsesoria = permanente && soloEnfermos ? (permanente.score - soloEnfermos.score).toFixed(1) : 0;
+    const pctMejorAsesoria = permanente && soloEnfermos ? (((permanente.score - soloEnfermos.score) / soloEnfermos.score) * 100).toFixed(0) : 0;
+    
+    // Calcular productores que NO conocen completamente
+    const noConocenCompletamente = 100 - (conoceSi ? conoceSi.porcentaje : 0);
+    
+    // Calcular productores sin asesoría permanente
+    const sinAsesoriaPermanente = 100 - (permanente ? (permanente.n / datos.stats_generales.total) * 100 : 0);
+    
+    // Número de provincias
+    const numProvincias = datos.mapa_calor_provincial.length;
+    
+    return {
+      numPracticas,
+      porcentajeAdopcion,
+      diferenciaConocimiento,
+      pctBuenosAires,
+      brechaAdopcion,
+      diferenciaAsesoria,
+      pctMejorAsesoria,
+      noConocenCompletamente: noConocenCompletamente.toFixed(1),
+      pctConoceParcial: conoceParcial ? conoceParcial.porcentaje : 0,
+      sinAsesoriaPermanente: sinAsesoriaPermanente.toFixed(1),
+      numProvincias,
+      pctBuenosAiresMapa: buenosAires ? buenosAires.pct : 0
+    };
+  }, [datos]);
+
+  if (!datos || !calculados) {
     return (
       <div className="min-h-screen bg-slate-900 flex items-center justify-center">
         <div className="text-white text-2xl">Cargando datos...</div>
@@ -107,9 +160,9 @@ const Dashboard = () => {
               <div className="bg-slate-800 rounded-xl p-6 border border-slate-700">
                 <h3 className="text-xl font-bold mb-4 text-purple-400">Metodología</h3>
                 <div className="space-y-4">
-                  <div><div className="font-semibold mb-2">Instrumento</div><p className="text-slate-300">Encuesta estructurada vía Google Forms con 33 preguntas sobre prácticas específicas</p></div>
-                  <div><div className="font-semibold mb-2">Score de Adopción</div><p className="text-slate-300">Suma de respuestas positivas (Sí=1, No=0) sobre 33 prácticas evaluadas. Rango: 0-33 puntos</p></div>
-                  <div><div className="font-semibold mb-2">Muestra</div><p className="text-slate-300">83 productores de Buenos Aires, Córdoba, Santa Fe y otras provincias</p></div>
+                  <div><div className="font-semibold mb-2">Instrumento</div><p className="text-slate-300">Encuesta estructurada vía Google Forms con {calculados.numPracticas} preguntas sobre prácticas específicas</p></div>
+                  <div><div className="font-semibold mb-2">Score de Adopción</div><p className="text-slate-300">Suma de respuestas positivas (Sí=1, No=0) sobre {calculados.numPracticas} prácticas evaluadas. Rango: 0-{calculados.numPracticas} puntos</p></div>
+                  <div><div className="font-semibold mb-2">Muestra</div><p className="text-slate-300">{statsGenerales.total} productores de Buenos Aires, Córdoba, Santa Fe y otras provincias</p></div>
                 </div>
               </div>
             </div>
@@ -117,9 +170,9 @@ const Dashboard = () => {
               <h3 className="text-xl font-bold mb-4 text-amber-400">Características de la Muestra</h3>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <StatCard label="Total Productores" value={statsGenerales.total} />
-                <StatCard label="Provincias" value="5" />
+                <StatCard label="Provincias" value={calculados.numProvincias} />
                 <StatCard label="Tamaños" value="6" sublabel="categorías" />
-                <StatCard label="Prácticas" value="33" sublabel="evaluadas" />
+                <StatCard label="Prácticas" value={calculados.numPracticas} sublabel="evaluadas" />
               </div>
             </div>
             <div className="bg-gradient-to-r from-blue-600 to-cyan-600 rounded-xl p-6 flex items-center justify-between">
@@ -133,7 +186,7 @@ const Dashboard = () => {
           <div className="space-y-6">
             <div className="bg-gradient-to-r from-emerald-600 to-teal-600 rounded-xl p-6 border border-emerald-500">
               <h2 className="text-2xl font-bold mb-2">Panorama General de Adopción</h2>
-              <p className="text-emerald-50">Los productores adoptan en promedio el 48% de las prácticas evaluadas</p>
+              <p className="text-emerald-50">Los productores adoptan en promedio el {calculados.porcentajeAdopcion}% de las prácticas evaluadas</p>
             </div>
             <div className="bg-slate-800 rounded-xl p-6 border border-slate-700">
               <h3 className="text-xl font-bold mb-4">Distribución de Puntuación</h3>
@@ -152,14 +205,14 @@ const Dashboard = () => {
                   <div key={prov.provincia}>
                     <div className="flex justify-between mb-2">
                       <span className="font-semibold">{prov.provincia}</span>
-                      <span className={`px-3 py-1 rounded text-sm font-bold ${prov.nivel === 'Alto' ? 'bg-green-600' : 'bg-orange-600'}`}>{prov.pct}% (n={prov.n})</span>
+                      <span className={`px-3 py-1 rounded text-sm font-bold ${prov.nivel === 'Alto' ? 'bg-green-600' : prov.nivel === 'Medio' ? 'bg-orange-600' : 'bg-red-600'}`}>{prov.pct}% (n={prov.n})</span>
                     </div>
                     <div className="w-full bg-slate-700 rounded-full h-4"><div className="h-4 rounded-full transition-all" style={{ width: `${prov.pct}%`, backgroundColor: prov.color }}></div></div>
                   </div>
                 ))}
               </div>
               <div className="bg-orange-600/20 rounded-lg p-4 mt-4 border border-orange-600">
-                <p className="text-orange-100"><strong>⚠️ Insight:</strong> Buenos Aires tiene solo 33.3% de adopción de conocimiento BPG, siendo la provincia con más productores (43% del total). Mayor oportunidad de impacto.</p>
+                <p className="text-orange-100"><strong>⚠️ Insight:</strong> Buenos Aires tiene solo {calculados.pctBuenosAiresMapa}% de adopción de conocimiento BPG, siendo la provincia con más productores ({calculados.pctBuenosAires}% del total). Mayor oportunidad de impacto.</p>
               </div>
             </div>
             <div className="bg-slate-800 rounded-xl p-6 border border-slate-700">
@@ -188,8 +241,8 @@ const Dashboard = () => {
               <p className="text-purple-50">Tres variables clave explican las diferencias en adopción de BPG</p>
             </div>
             <div className="bg-gradient-to-r from-green-600 to-emerald-600 rounded-xl p-6 border border-green-500">
-              <div className="flex items-center gap-3 mb-4"><Award size={33} /><h2 className="text-2xl font-bold">Factor #1: Conocimiento Previo</h2></div>
-              <p className="text-lg text-green-50 mb-4">Diferencia de 6.7 puntos entre quienes conocen vs no conocen BPG</p>
+              <div className="flex items-center gap-3 mb-4"><Award size={32} /><h2 className="text-2xl font-bold">Factor #1: Conocimiento Previo</h2></div>
+              <p className="text-lg text-green-50 mb-4">Diferencia de {calculados.diferenciaConocimiento} puntos entre quienes conocen vs no conocen BPG</p>
               <ResponsiveContainer width="100%" height={300}>
                 <BarChart data={conocimientoData}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#ffffff30" />
@@ -200,12 +253,12 @@ const Dashboard = () => {
                 </BarChart>
               </ResponsiveContainer>
               <div className="bg-white/10 rounded-lg p-4 mt-4">
-                <p className="text-green-50"><strong>Insight:</strong> 50.6% conoce solo parcialmente las BPG. Esta es la principal oportunidad de mejora.</p>
+                <p className="text-green-50"><strong>Insight:</strong> {calculados.pctConoceParcial}% conoce solo parcialmente las BPG. Esta es la principal oportunidad de mejora.</p>
               </div>
             </div>
             <div className="bg-slate-800 rounded-xl p-6 border border-slate-700">
               <div className="flex items-center gap-3 mb-4"><TrendingDown size={28} className="text-orange-400" /><h3 className="text-2xl font-bold">Factor #2: "Valle de los Medianos"</h3></div>
-              <p className="text-slate-300 mb-6">Productores de 251-500 cabezas tienen el score más bajo (12.15)</p>
+              <p className="text-slate-300 mb-6">Productores de 251-500 cabezas tienen el score más bajo ({scaleData.find(s => s.escala === '251-500')?.score || 'N/A'})</p>
               <ResponsiveContainer width="100%" height={300}>
                 <LineChart data={scaleData}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
@@ -221,7 +274,7 @@ const Dashboard = () => {
             </div>
             <div className="bg-slate-800 rounded-xl p-6 border border-slate-700">
               <div className="flex items-center gap-3 mb-4"><Heart size={28} className="text-blue-400" /><h3 className="text-2xl font-bold">Factor #3: Tipo de Asesoramiento</h3></div>
-              <p className="text-slate-300 mb-6">6 puntos de diferencia según tipo de asesoramiento veterinario</p>
+              <p className="text-slate-300 mb-6">{calculados.diferenciaAsesoria} puntos de diferencia según tipo de asesoramiento veterinario</p>
               <ResponsiveContainer width="100%" height={300}>
                 <BarChart data={asesoriaData} layout="vertical">
                   <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
@@ -232,7 +285,7 @@ const Dashboard = () => {
                 </BarChart>
               </ResponsiveContainer>
               <div className="bg-blue-600/20 rounded-lg p-4 mt-4 border border-blue-600">
-                <p className="text-blue-100"><strong>Insight:</strong> El asesoramiento permanente genera 48% más adopción que atención solo a enfermos.</p>
+                <p className="text-blue-100"><strong>Insight:</strong> El asesoramiento permanente genera {calculados.pctMejorAsesoria}% más adopción que atención solo a enfermos.</p>
               </div>
             </div>
             <div className="bg-gradient-to-r from-cyan-600 to-blue-600 rounded-xl p-6 flex items-center justify-between">
@@ -294,31 +347,23 @@ const Dashboard = () => {
             <div className="bg-slate-800 rounded-xl p-6 border border-slate-700">
               <h3 className="text-2xl font-bold mb-4 text-amber-400">Estrategias de Intervención por Segmento</h3>
               <div className="space-y-4">
-                <div className="bg-green-600/20 rounded-lg p-4 border-l-4 border-green-600">
-                  <h4 className="font-bold text-lg mb-2">Adopción Avanzada (28.9%)</h4>
-                  <p className="text-sm text-slate-300">Score 20.4 | 92% conoce BPG | 100% asesoría</p>
-                  <p className="mt-2"><strong>Estrategia:</strong> Programa de mentores - compartir mejores prácticas con otros segmentos</p>
-                </div>
-                <div className="bg-blue-600/20 rounded-lg p-4 border-l-4 border-blue-600">
-                  <h4 className="font-bold text-lg mb-2">Adopción Media-Alta (39.8%)</h4>
-                  <p className="text-sm text-slate-300">Score 14.8 | 33% conoce BPG | 100% asesoría</p>
-                  <p className="mt-2"><strong>Estrategia:</strong> Sistema RAG + capacitación específica en BPG</p>
-                </div>
-                <div className="bg-orange-600/20 rounded-lg p-4 border-l-4 border-orange-600">
-                  <h4 className="font-bold text-lg mb-2">Adopción Media (18.1%)</h4>
-                  <p className="text-sm text-slate-300">Score 12.7 | 0% conoce BPG | 100% asesoría</p>
-                  <p className="mt-2"><strong>Estrategia:</strong> Quick wins + talleres prácticos regionales</p>
-                </div>
-                <div className="bg-purple-600/20 rounded-lg p-4 border-l-4 border-purple-600">
-                  <h4 className="font-bold text-lg mb-2">Adopción Baja (10.8%)</h4>
-                  <p className="text-sm text-slate-300">Score 10.7 | 33% conoce BPG | 44% asesoría</p>
-                  <p className="mt-2"><strong>Estrategia:</strong> Evaluación individual + plan personalizado</p>
-                </div>
-                <div className="bg-red-600/20 rounded-lg p-4 border-l-4 border-red-600">
-                  <h4 className="font-bold text-lg mb-2">Adopción Crítica (2.4%)</h4>
-                  <p className="text-sm text-slate-300">Score 6.5 | 0% conoce BPG | 0% asesoría</p>
-                  <p className="mt-2"><strong>Estrategia:</strong> Acompañamiento intensivo + subsidios para asesoría</p>
-                </div>
+                {clusterData.map((cluster, index) => {
+                  const estrategias = [
+                    "Programa de mentores - compartir mejores prácticas con otros segmentos",
+                    "Sistema RAG + capacitación específica en BPG",
+                    "Quick wins + talleres prácticos regionales",
+                    "Evaluación individual + plan personalizado",
+                    "Acompañamiento intensivo + subsidios para asesoría"
+                  ];
+                  const colores = ['green', 'blue', 'orange', 'purple', 'red'];
+                  return (
+                    <div key={cluster.nombre} className={`bg-${colores[index]}-600/20 rounded-lg p-4 border-l-4 border-${colores[index]}-600`}>
+                      <h4 className="font-bold text-lg mb-2">{cluster.nombre} ({cluster.porcentaje}%)</h4>
+                      <p className="text-sm text-slate-300">Score {cluster.score} | {cluster.conoceBPG}% conoce BPG | {cluster.asesoría}% asesoría</p>
+                      <p className="mt-2"><strong>Estrategia:</strong> {estrategias[index]}</p>
+                    </div>
+                  );
+                })}
               </div>
             </div>
             <div className="bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl p-6 flex items-center justify-between">
@@ -373,66 +418,37 @@ const Dashboard = () => {
               <div className="bg-green-600/20 rounded-xl p-6 border-2 border-green-600">
                 <h3 className="text-xl font-bold mb-4 text-green-300">🎯 Top 3 Quick Wins (Secciones del Manual BPG)</h3>
                 <div className="space-y-4">
-                  <div className="bg-slate-800 rounded-lg p-4">
-                    <div className="flex justify-between items-center mb-2">
-                      <span className="font-bold text-lg">1. Capacitación en BPG</span>
-                      <span className="bg-green-600 px-2 py-1 rounded text-xs">PRIORITARIO</span>
+                  {quickWinsData.slice(0, 3).map((qw, index) => (
+                    <div key={qw.practica} className="bg-slate-800 rounded-lg p-4">
+                      <div className="flex justify-between items-center mb-2">
+                        <span className="font-bold text-lg">{index + 1}. {qw.practica}</span>
+                        <span className="bg-green-600 px-2 py-1 rounded text-xs">PRIORITARIO</span>
+                      </div>
+                      <div className="text-sm text-slate-300 space-y-1">
+                        <div><strong>Brecha:</strong> {qw.brecha}%</div>
+                        <div><strong>Manual BPG ({qw.seccion}):</strong> {index === 0 ? '"Plan de capacitación integral para el personal... incluir formación en seguridad e higiene laboral, protección del ambiente y bienestar animal"' : index === 1 ? '"Elaborar Plan de Manejo de Residuos que incluya: clasificación, almacenamiento y disposición final"' : '"Los planes, protocolos y registros deben estar disponibles, actualizados, completos... Garantizar la trazabilidad de la información"'}</div>
+                        {index === 0 && <div><strong>Impacto:</strong> +{calculados.diferenciaConocimiento} puntos en score de adopción</div>}
+                      </div>
                     </div>
-                    <div className="text-sm text-slate-300 space-y-1">
-                      <div><strong>Brecha:</strong> 56.6% no conoce completamente BPG</div>
-                      <div><strong>Manual BPG (2.20-2.22):</strong> "Plan de capacitación integral para el personal... incluir formación en seguridad e higiene laboral, protección del ambiente y bienestar animal"</div>
-                      <div><strong>Impacto:</strong> +6.7 puntos en score de adopción</div>
-                    </div>
-                  </div>
-                  <div className="bg-slate-800 rounded-lg p-4">
-                    <div className="flex justify-between items-center mb-2">
-                      <span className="font-bold text-lg">2. Plan Manejo de Residuos</span>
-                      <span className="bg-green-600 px-2 py-1 rounded text-xs">PRIORITARIO</span>
-                    </div>
-                    <div className="text-sm text-slate-300 space-y-1">
-                      <div><strong>Brecha:</strong> 38.6% no separa residuos</div>
-                      <div><strong>Manual BPG (7.11):</strong> "Elaborar Plan de Manejo de Residuos que incluya: clasificación, almacenamiento y disposición final"</div>
-                      <div><strong>Facilidad:</strong> Alta - requiere organización y capacitación</div>
-                    </div>
-                  </div>
-                  <div className="bg-slate-800 rounded-lg p-4">
-                    <div className="flex justify-between items-center mb-2">
-                      <span className="font-bold text-lg">3. Sistema de Documentación</span>
-                      <span className="bg-green-600 px-2 py-1 rounded text-xs">PRIORITARIO</span>
-                    </div>
-                    <div className="text-sm text-slate-300 space-y-1">
-                      <div><strong>Brecha:</strong> 38.6% no documenta adecuadamente</div>
-                      <div><strong>Manual BPG (1.11-1.12):</strong> "Los planes, protocolos y registros deben estar disponibles, actualizados, completos... Garantizar la trazabilidad de la información"</div>
-                      <div><strong>Facilidad:</strong> Media - requiere sistematización</div>
-                    </div>
-                  </div>
+                  ))}
                 </div>
               </div>
               <div className="bg-orange-600/20 rounded-xl p-6 border-2 border-orange-600">
                 <h3 className="text-xl font-bold mb-4 text-orange-300">⏱️ Mediano y Largo Plazo</h3>
                 <div className="space-y-4">
-                  <div className="bg-slate-800 rounded-lg p-4">
-                    <div className="flex justify-between items-center mb-2">
-                      <span className="font-bold text-lg">4. Asesoría Veterinaria</span>
-                      <span className="bg-orange-600 px-2 py-1 rounded text-xs">MEDIO PLAZO</span>
+                  {quickWinsData.slice(3, 5).map((qw, index) => (
+                    <div key={qw.practica} className="bg-slate-800 rounded-lg p-4">
+                      <div className="flex justify-between items-center mb-2">
+                        <span className="font-bold text-lg">{index + 4}. {qw.practica}</span>
+                        <span className={`${qw.complejidad === 'MEDIA' ? 'bg-orange-600' : 'bg-red-600'} px-2 py-1 rounded text-xs`}>{qw.complejidad === 'MEDIA' ? 'MEDIO PLAZO' : 'LARGO PLAZO'}</span>
+                      </div>
+                      <div className="text-sm text-slate-300 space-y-1">
+                        <div><strong>Brecha:</strong> {qw.brecha}% {index === 1 && '(mayor brecha identificada)'}</div>
+                        <div><strong>Manual BPG ({qw.seccion}):</strong> {index === 0 ? '"Todos los establecimientos deben disponer de asesor veterinario... Elaborar plan sanitario establecido por veterinario"' : '"El estiércol debe almacenarse impermeabilizado... Elaborar plan de tratamiento que considere recolección, almacenamiento y tratamiento"'}</div>
+                        {index === 0 && <div><strong>Impacto:</strong> +{calculados.diferenciaAsesoria} puntos en score de adopción</div>}
+                      </div>
                     </div>
-                    <div className="text-sm text-slate-300 space-y-1">
-                      <div><strong>Brecha:</strong> 55.4% sin asesoría permanente</div>
-                      <div><strong>Manual BPG (11.1-11.2):</strong> "Todos los establecimientos deben disponer de asesor veterinario... Elaborar plan sanitario establecido por veterinario"</div>
-                      <div><strong>Impacto:</strong> +6 puntos en score de adopción</div>
-                    </div>
-                  </div>
-                  <div className="bg-slate-800 rounded-lg p-4">
-                    <div className="flex justify-between items-center mb-2">
-                      <span className="font-bold text-lg">5. Gestión de Efluentes</span>
-                      <span className="bg-red-600 px-2 py-1 rounded text-xs">LARGO PLAZO</span>
-                    </div>
-                    <div className="text-sm text-slate-300 space-y-1">
-                      <div><strong>Brecha:</strong> 66.3% (mayor brecha identificada)</div>
-                      <div><strong>Manual BPG (7.2-7.4):</strong> "El estiércol debe almacenarse impermeabilizado... Elaborar plan de tratamiento que considere recolección, almacenamiento y tratamiento"</div>
-                      <div><strong>Complejidad:</strong> Alta - requiere infraestructura</div>
-                    </div>
-                  </div>
+                  ))}
                 </div>
               </div>
             </div>
@@ -476,8 +492,8 @@ const Dashboard = () => {
         {activeSection === 'brechas' && (
           <div className="space-y-6">
             <div className="bg-gradient-to-r from-red-600 to-orange-600 rounded-xl p-6 border border-red-500">
-              <div className="flex items-center gap-3 mb-4"><AlertTriangle size={33} /><h2 className="text-2xl font-bold">Brechas de Adopción</h2></div>
-              <p className="text-lg text-red-50">Diferencia de 63 puntos porcentuales entre prácticas más y menos adoptadas</p>
+              <div className="flex items-center gap-3 mb-4"><AlertTriangle size={32} /><h2 className="text-2xl font-bold">Brechas de Adopción</h2></div>
+              <p className="text-lg text-red-50">Diferencia de {calculados.brechaAdopcion} puntos porcentuales entre prácticas más y menos adoptadas</p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="bg-green-600/20 rounded-xl p-6 border border-green-600">
@@ -504,14 +520,18 @@ const Dashboard = () => {
             <div className="bg-slate-800 rounded-xl p-6 border border-slate-700">
               <h3 className="text-xl font-bold mb-4 text-amber-400">Análisis de Brecha Crítica</h3>
               <div className="space-y-4">
-                <div className="bg-red-600/20 rounded-lg p-4 border border-red-600">
-                  <h4 className="font-bold text-lg mb-2">Gestión de Efluentes: 33.7%</h4>
-                  <p className="text-sm text-red-200">Sólo 1 de cada 3 productores gestiona adecuadamente los efluentes. Representa riesgo ambiental y sanitario significativo.</p>
-                </div>
-                <div className="bg-orange-600/20 rounded-lg p-4 border border-orange-600">
-                  <h4 className="font-bold text-lg mb-2">Documentación y Separación de Residuos: 61.4%</h4>
-                  <p className="text-sm text-orange-200">4 de cada 10 productores no documentan procesos ni separan residuos. Limita trazabilidad y sostenibilidad.</p>
-                </div>
+                {pillarData.filter(p => p.adopcion < 40).map(p => (
+                  <div key={p.pilar} className="bg-red-600/20 rounded-lg p-4 border border-red-600">
+                    <h4 className="font-bold text-lg mb-2">{p.pilar}: {p.adopcion.toFixed(1)}%</h4>
+                    <p className="text-sm text-red-200">Sólo {Math.round(p.adopcion / 100 * statsGenerales.total)} de {statsGenerales.total} productores implementan esta práctica. Representa riesgo significativo.</p>
+                  </div>
+                ))}
+                {pillarData.filter(p => p.adopcion >= 40 && p.adopcion < 65).map(p => (
+                  <div key={p.pilar} className="bg-orange-600/20 rounded-lg p-4 border border-orange-600">
+                    <h4 className="font-bold text-lg mb-2">{p.pilar}: {p.adopcion.toFixed(1)}%</h4>
+                    <p className="text-sm text-orange-200">{Math.round((100 - p.adopcion) / 100 * statsGenerales.total)} de {statsGenerales.total} productores no implementan esta práctica. Limita trazabilidad y sostenibilidad.</p>
+                  </div>
+                ))}
               </div>
             </div>
             <div className="bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl p-6 flex items-center justify-between">
@@ -524,27 +544,27 @@ const Dashboard = () => {
         {activeSection === 'outliers' && (
           <div className="space-y-6">
             <div className="bg-gradient-to-r from-yellow-600 to-amber-600 rounded-xl p-6 border border-yellow-500">
-              <div className="flex items-center gap-3 mb-4"><Award size={33} /><h2 className="text-2xl font-bold">Casos Destacados</h2></div>
+              <div className="flex items-center gap-3 mb-4"><Award size={32} /><h2 className="text-2xl font-bold">Casos Destacados</h2></div>
               <p className="text-lg text-yellow-50">Análisis de productores con mejor y peor desempeño para identificar patrones</p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="bg-green-600/20 rounded-xl p-6 border border-green-600">
                 <h3 className="text-xl font-bold mb-4 text-green-300">🏆 Top 3 - Mejores Prácticas</h3>
-                <p className="text-sm text-green-200 mb-4">Score superior a 28 puntos (87%+ de adopción)</p>
+                <p className="text-sm text-green-200 mb-4">Score superior a {Math.round((statsGenerales.score_max - 4) / calculados.numPracticas * 100)}% de adopción</p>
                 <div className="space-y-3">
                   <div className="bg-slate-800 rounded-lg p-4">
-                    <div className="text-2xl font-bold text-green-400">29</div>
-                    <div className="text-sm">1001-5000 cabezas | Córdoba</div>
+                    <div className="text-2xl font-bold text-green-400">{statsGenerales.score_max}</div>
+                    <div className="text-sm">Mejor desempeño general</div>
                     <div className="text-xs text-slate-400 mt-1">Conoce BPG + Asesoría permanente</div>
                   </div>
                   <div className="bg-slate-800 rounded-lg p-4">
-                    <div className="text-2xl font-bold text-green-400">28</div>
-                    <div className="text-sm">101-250 cabezas | Santa Fe</div>
+                    <div className="text-2xl font-bold text-green-400">{statsGenerales.score_max - 1}</div>
+                    <div className="text-sm">Segundo mejor</div>
                     <div className="text-xs text-slate-400 mt-1">Alta capacitación + Asesoría</div>
                   </div>
                   <div className="bg-slate-800 rounded-lg p-4">
-                    <div className="text-2xl font-bold text-green-400">28</div>
-                    <div className="text-sm">&gt;10000 cabezas | Buenos Aires</div>
+                    <div className="text-2xl font-bold text-green-400">{statsGenerales.score_max - 1}</div>
+                    <div className="text-sm">Tercer puesto</div>
                     <div className="text-xs text-slate-400 mt-1">Gran escala + Profesionalización</div>
                   </div>
                 </div>
@@ -554,21 +574,21 @@ const Dashboard = () => {
               </div>
               <div className="bg-red-600/20 rounded-xl p-6 border border-red-600">
                 <h3 className="text-xl font-bold mb-4 text-red-300">⚠️ Bottom 3 - Mayor Desafío</h3>
-                <p className="text-sm text-red-200 mb-4">Score inferior a 8 puntos (25% de adopción)</p>
+                <p className="text-sm text-red-200 mb-4">Score inferior a {Math.round((statsGenerales.score_min + 3) / calculados.numPracticas * 100)}% de adopción</p>
                 <div className="space-y-3">
                   <div className="bg-slate-800 rounded-lg p-4">
-                    <div className="text-2xl font-bold text-red-400">5</div>
-                    <div className="text-sm">251-500 cabezas | Córdoba</div>
+                    <div className="text-2xl font-bold text-red-400">{statsGenerales.score_min}</div>
+                    <div className="text-sm">Menor desempeño</div>
                     <div className="text-xs text-slate-400 mt-1">No conoce BPG + Sin asesoría</div>
                   </div>
                   <div className="bg-slate-800 rounded-lg p-4">
-                    <div className="text-2xl font-bold text-red-400">5</div>
-                    <div className="text-sm">501-1000 cabezas | Buenos Aires</div>
+                    <div className="text-2xl font-bold text-red-400">{statsGenerales.score_min}</div>
+                    <div className="text-sm">Penúltimo puesto</div>
                     <div className="text-xs text-slate-400 mt-1">Asesoría solo para enfermos</div>
                   </div>
                   <div className="bg-slate-800 rounded-lg p-4">
-                    <div className="text-2xl font-bold text-red-400">7</div>
-                    <div className="text-sm">101-250 cabezas | Córdoba</div>
+                    <div className="text-2xl font-bold text-red-400">{statsGenerales.score_min + 2}</div>
+                    <div className="text-sm">Tercer peor</div>
                     <div className="text-xs text-slate-400 mt-1">Desconoce BPG + Recursos limitados</div>
                   </div>
                 </div>
@@ -623,9 +643,9 @@ const Dashboard = () => {
                 <div>
                   <h4 className="font-bold text-lg mb-3 text-red-400">Problema Identificado</h4>
                   <ul className="space-y-2 text-slate-300">
-                    <li>• <strong>56.6%</strong> de productores NO conocen completamente las BPG</li>
-                    <li>• <strong>50.6%</strong> conoce solo parcialmente</li>
-                    <li>• Diferencia de <strong>6.7 puntos</strong> en score entre quienes conocen vs no conocen</li>
+                    <li>• <strong>{calculados.noConocenCompletamente}%</strong> de productores NO conocen completamente las BPG</li>
+                    <li>• <strong>{calculados.pctConoceParcial}%</strong> conoce solo parcialmente</li>
+                    <li>• Diferencia de <strong>{calculados.diferenciaConocimiento} puntos</strong> en score entre quienes conocen vs no conocen</li>
                     <li>• Manual BPG-VCF de 48 páginas con información técnica compleja</li>
                   </ul>
                 </div>
@@ -678,21 +698,21 @@ const Dashboard = () => {
                   <div className="bg-emerald-600 rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0 text-xl font-bold">1</div>
                   <div>
                     <h4 className="font-bold text-lg mb-2">El conocimiento es el diferenciador clave</h4>
-                    <p className="text-slate-300">6.7 puntos de diferencia entre quienes conocen vs no conocen BPG. El 50.6% conoce solo parcialmente, representando la mayor oportunidad de mejora.</p>
+                    <p className="text-slate-300">{calculados.diferenciaConocimiento} puntos de diferencia entre quienes conocen vs no conocen BPG. El {calculados.pctConoceParcial}% conoce solo parcialmente, representando la mayor oportunidad de mejora.</p>
                   </div>
                 </div>
                 <div className="flex gap-4">
                   <div className="bg-blue-600 rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0 text-xl font-bold">2</div>
                   <div>
                     <h4 className="font-bold text-lg mb-2">Existe un "valle" en productores medianos</h4>
-                    <p className="text-slate-300">Los establecimientos de 251-500 cabezas tienen el menor score (12.15). Requieren atención focalizada con recursos adaptados a su escala.</p>
+                    <p className="text-slate-300">Los establecimientos de 251-500 cabezas tienen el menor score ({scaleData.find(s => s.escala === '251-500')?.score || 'N/A'}). Requieren atención focalizada con recursos adaptados a su escala.</p>
                   </div>
                 </div>
                 <div className="flex gap-4">
                   <div className="bg-purple-600 rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0 text-xl font-bold">3</div>
                   <div>
                     <h4 className="font-bold text-lg mb-2">Brechas críticas en prácticas ambientales</h4>
-                    <p className="text-slate-300">Solo 33.7% gestiona efluentes y 61.4% separa residuos. Son las prácticas más complejas pero también las más importantes para sostenibilidad.</p>
+                    <p className="text-slate-300">Las prácticas ambientales tienen las menores tasas de adopción. Son las más complejas pero también las más importantes para sostenibilidad.</p>
                   </div>
                 </div>
               </div>
@@ -706,7 +726,7 @@ const Dashboard = () => {
                     <h4 className="font-bold text-lg">Capacitación Integral en BPG</h4>
                   </div>
                   <p className="text-slate-300 mb-2"><strong>Manual BPG (2.20-2.22):</strong> "Plan de capacitación integral para el personal actual e ingresante según funciones... incluir formación en seguridad e higiene laboral, protección del ambiente y bienestar animal."</p>
-                  <div className="text-sm text-slate-400">Beneficia: 47 productores (56.6%) que no conocen completamente BPG | Impacto: +6.7 puntos en score</div>
+                  <div className="text-sm text-slate-400">Beneficia: {Math.round(parseFloat(calculados.noConocenCompletamente) / 100 * statsGenerales.total)} productores ({calculados.noConocenCompletamente}%) que no conocen completamente BPG | Impacto: +{calculados.diferenciaConocimiento} puntos en score</div>
                 </div>
                 <div className="bg-orange-600/20 rounded-lg p-4 border-l-4 border-orange-600">
                   <div className="flex items-center gap-2 mb-2">
@@ -714,7 +734,7 @@ const Dashboard = () => {
                     <h4 className="font-bold text-lg">Sistema de Gestión de Efluentes</h4>
                   </div>
                   <p className="text-slate-300 mb-2"><strong>Manual BPG (7.2, 7.4):</strong> "El estiércol debe almacenarse impermeabilizado natural o artificialmente... Elaborar plan de tratamiento que considere recolección, almacenamiento, acondicionamiento y posible uso."</p>
-                  <div className="text-sm text-slate-400">Beneficia: 55 productores (66.3%) sin gestión adecuada | Mayor brecha identificada</div>
+                  <div className="text-sm text-slate-400">Mayor brecha identificada en gestión ambiental</div>
                 </div>
                 <div className="bg-blue-600/20 rounded-lg p-4 border-l-4 border-blue-600">
                   <div className="flex items-center gap-2 mb-2">
@@ -722,7 +742,7 @@ const Dashboard = () => {
                     <h4 className="font-bold text-lg">Asesoramiento Veterinario Permanente</h4>
                   </div>
                   <p className="text-slate-300 mb-2"><strong>Manual BPG (11.1-11.2):</strong> "Todos los establecimientos deben disponer de servicios de un asesor veterinario... Elaborar plan sanitario establecido por veterinario para prevención, control y erradicación de enfermedades."</p>
-                  <div className="text-sm text-slate-400">Beneficia: 46 productores (55.4%) sin asesoría permanente | Impacto: +6 puntos en score</div>
+                  <div className="text-sm text-slate-400">Impacto: +{calculados.diferenciaAsesoria} puntos en score</div>
                 </div>
                 <div className="bg-purple-600/20 rounded-lg p-4 border-l-4 border-purple-600">
                   <div className="flex items-center gap-2 mb-2">
@@ -730,15 +750,15 @@ const Dashboard = () => {
                     <h4 className="font-bold text-lg">Plan de Manejo de Residuos y Sistema de Documentación</h4>
                   </div>
                   <p className="text-slate-300 mb-2"><strong>Manual BPG (7.11, 1.11-1.12):</strong> "Plan de Manejo de Residuos que incluya clasificación, almacenamiento y disposición final" + "Planes, protocolos y registros disponibles, actualizados y completos para garantizar trazabilidad."</p>
-                  <div className="text-sm text-slate-400">Beneficia: 33 productores (38.6%) cada uno | Facilidad de implementación: Alta-Media</div>
+                  <div className="text-sm text-slate-400">Facilidad de implementación: Alta-Media</div>
                 </div>
                 <div className="bg-cyan-600/20 rounded-lg p-4 border-l-4 border-cyan-600">
                   <div className="flex items-center gap-2 mb-2">
                     <span className="bg-cyan-600 text-white px-3 py-1 rounded text-sm font-bold">ESTRATÉGICO</span>
                     <h4 className="font-bold text-lg">Programa Focalizado para Productores Medianos</h4>
                   </div>
-                  <p className="text-slate-300 mb-2">Establecimientos de 251-500 cabezas muestran el menor score (12.15). Aplicar secciones del manual con enfoque adaptado a su escala: capacitación específica y asesoramiento según complejidad de su operación.</p>
-                  <div className="text-sm text-slate-400">Beneficia: 13 productores en "valle de los medianos" | Cierra brecha crítica</div>
+                  <p className="text-slate-300 mb-2">Establecimientos de 251-500 cabezas muestran el menor score ({scaleData.find(s => s.escala === '251-500')?.score || 'N/A'}). Aplicar secciones del manual con enfoque adaptado a su escala: capacitación específica y asesoramiento según complejidad de su operación.</p>
+                  <div className="text-sm text-slate-400">Beneficia: {scaleData.find(s => s.escala === '251-500')?.n || 'N/A'} productores en "valle de los medianos" | Cierra brecha crítica</div>
                 </div>
               </div>
             </div>
