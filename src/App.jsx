@@ -22,7 +22,7 @@ const Dashboard = () => {
   const calculados = useMemo(() => {
     if (!datos) return null;
 
-    const numPracticas = datos.stats_generales.score_max; // El máximo score es el número de prácticas
+    const numPracticas = datos.stats_generales.num_practicas; // El máximo score es el número de prácticas
     const porcentajeAdopcion = ((datos.stats_generales.score_promedio / numPracticas) * 100).toFixed(1);
     
     // Calcular diferencia de conocimiento
