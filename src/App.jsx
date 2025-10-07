@@ -349,11 +349,11 @@ const Dashboard = () => {
               <div className="space-y-4">
                 {clusterData.map((cluster, index) => {
                   const estrategias = [
-                    "Programa de mentores - compartir mejores prácticas con otros segmentos",
-                    "Sistema RAG + capacitación específica en BPG",
-                    "Quick wins + talleres prácticos regionales",
-                    "Evaluación individual + plan personalizado",
-                    "Acompañamiento intensivo + subsidios para asesoría"
+                    "Mejora continua y seguimiento (Manual BPG, pág. 5-6)",
+                    "Capacitación del personal en BPG (requisitos 2.20-2.22, pág. 12)",
+                    "Implementación progresiva de BPG con capacitación (etapas de implementación, pág. 4-6)",
+                    "Caracterización y diagnóstico de situación (etapa 1, pág. 5)",
+                    "Asesoría veterinaria básica (requisito 11.1, pág. 34) + plan sanitario"
                   ];
                   const colores = ['green', 'blue', 'orange', 'purple', 'red'];
                   return (
